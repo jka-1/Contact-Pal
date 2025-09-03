@@ -1,78 +1,58 @@
 <?php
-	header('Access-Control-Allow-Origin: *');
-	header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-	header('Access-Control-Allow-Headers: Content-Type, Authorization');
-	header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json');
 
-	if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    	http_response_code(200);
-    	exit();
-	}
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit(); }
 
-	$inData = getRequestInfo();
-	
-	$id = 0;
+$inData = getRequestInfo();
+$first = trim($inData['firstName'] ?? '');
+$last  = trim($inData['lastName']  ?? '');
+$login = trim($inData['login']     ?? '');
+$pass  = (string)($inData['password'] ?? '');
 
-	// TODO: Fill in your SQL credentials
-	$conn = new mysqli("YOUR_HOST", "YOUR_USERNAME", "YOUR_PASSWORD", "YOUR_DATABASE"); 	
-	if( $conn->connect_error )
-	{
-		returnWithError( $conn->connect_error );
-	}
-	else
-	{
-		// Check if user already exists
-		$stmt = $conn->prepare("SELECT ID FROM Users WHERE Login=?");
-		$stmt->bind_param("s", $inData["login"]);
-		$stmt->execute();
-		$result = $stmt->get_result();
+if ($first === '' || $last === '' || $login === '' || $pass === '') {
+  returnWithError("Missing required field(s): firstName, lastName, login, password"); exit;
+}
 
-		if( $result->fetch_assoc() )
-		{
-			returnWithError("User already exists");
-		}
-		else
-		{
-			// Insert new user
-			$stmt = $conn->prepare("INSERT INTO Users (firstName, lastName, Login, Password) VALUES (?, ?, ?, ?)");
-			$stmt->bind_param("ssss", $inData["firstName"], $inData["lastName"], $inData["login"], $inData["password"]);
-			
-			if( $stmt->execute() )
-			{
-				$id = $conn->insert_id;
-				returnWithInfo( $inData["firstName"], $inData["lastName"], $id );
-			}
-			else
-			{
-				returnWithError("Registration failed");
-			}
-		}
+$conn = new mysqli("localhost", "TheBeast", "Team2", "CONTACTPALDB");
+if ($conn->connect_error) { returnWithError("DB connection failed: " . $conn->connect_error); exit; }
+$conn->set_charset("utf8mb4");
 
-		$stmt->close();
-		$conn->close();
-	}
-	
-	function getRequestInfo()
-	{
-		return json_decode(file_get_contents('php://input'), true);
-	}
+// Ensure UNIQUE constraint exists on Login (run once in MySQL shell):
+// ALTER TABLE Users ADD UNIQUE KEY (Login);
 
-	function sendResultInfoAsJson( $obj )
-	{
-		header('Content-type: application/json');
-		echo $obj;
-	}
-	
-	function returnWithError( $err )
-	{
-		$retValue = '{"id":0,"firstName":"","lastName":"","error":"' . $err . '"}';
-		sendResultInfoAsJson( $retValue );
-	}
-	
-	function returnWithInfo( $firstName, $lastName, $id )
-	{
-		$retValue = '{"id":' . $id . ',"firstName":"' . $firstName . '","lastName":"' . $lastName . '","error":""}';
-		sendResultInfoAsJson( $retValue );
-	}
-	
-?>
+$check = $conn->prepare("SELECT ID FROM Users WHERE Login=? LIMIT 1");
+$check->bind_param("s", $login);
+$check->execute();
+$checkRes = $check->get_result();
+if ($checkRes && $checkRes->fetch_assoc()) { 
+  $check->close(); $conn->close(); 
+  returnWithError("User already exists"); exit; 
+}
+$check->close();
+
+$ins = $conn->prepare("INSERT INTO Users (firstName, lastName, Login, Password) VALUES (?,?,?,?)");
+$ins->bind_param("ssss", $first, $last, $login, $pass);
+if (!$ins->execute()) {
+  $err = ($conn->errno === 1062) ? "User already exists" : ("Insert failed: " . $conn->error);
+  $ins->close(); $conn->close(); returnWithError($err); exit;
+}
+
+$newId = (int)$ins->insert_id;
+$ins->close(); $conn->close();
+returnWithInfo($first, $last, $newId);
+
+function getRequestInfo() {
+  $raw = file_get_contents('php://input');
+  $data = json_decode($raw, true);
+  return is_array($data) ? $data : [];
+}
+function sendResultInfoAsJson($obj) { echo $obj; }
+function returnWithError($err) {
+  sendResultInfoAsJson(json_encode(["id"=>0,"firstName"=>"","lastName"=>"","error"=>$err]));
+}
+function returnWithInfo($firstName, $lastName, $id) {
+  sendResultInfoAsJson(json_encode(["id"=>$id,"firstName"=>$firstName,"lastName"=>$lastName,"error"=>""]));
+}
