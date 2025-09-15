@@ -57,7 +57,7 @@ Structure of the project:
 
 ## Technologies Used
 
-- **Frontend**: HTML, JavaScript (possibly CSS)  
+- **Frontend**: HTML, JavaScript, CSS  
 - **Backend**: PHP  
 - **License**: Apache 2.0  
 
@@ -107,7 +107,6 @@ Once running:
 - Edit or delete existing contacts  
 - View contacts in list / detailed views  
 
-*(Add screenshots here if you have them.)*
 
 ---
 
