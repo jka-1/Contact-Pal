@@ -7,10 +7,15 @@ header('Content-Type: application/json');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit(); }
 
 $inData = getRequestInfo();
+
 $first = trim($inData['firstName'] ?? '');
 $last  = trim($inData['lastName']  ?? '');
 $login = trim($inData['login']     ?? '');
 $pass  = (string)($inData['password'] ?? '');
+
+// NEW: optional fields
+$email = trim($inData['email'] ?? '');
+$phone = trim($inData['phone'] ?? '');
 
 if ($first === '' || $last === '' || $login === '' || $pass === '') {
   returnWithError("Missing required field(s): firstName, lastName, login, password"); exit;
@@ -20,7 +25,7 @@ $conn = new mysqli("localhost", "TheBeast", "Team2", "CONTACTPALDB");
 if ($conn->connect_error) { returnWithError("DB connection failed: " . $conn->connect_error); exit; }
 $conn->set_charset("utf8mb4");
 
-// Ensure UNIQUE constraint exists on Login (run once in MySQL shell):
+// Ensure UNIQUE constraint exists on Login (run once manually):
 // ALTER TABLE Users ADD UNIQUE KEY (Login);
 
 $check = $conn->prepare("SELECT ID FROM Users WHERE Login=? LIMIT 1");
@@ -33,6 +38,7 @@ if ($checkRes && $checkRes->fetch_assoc()) {
 }
 $check->close();
 
+// Insert user (same as before)
 $ins = $conn->prepare("INSERT INTO Users (firstName, lastName, Login, Password) VALUES (?,?,?,?)");
 $ins->bind_param("ssss", $first, $last, $login, $pass);
 if (!$ins->execute()) {
@@ -41,9 +47,22 @@ if (!$ins->execute()) {
 }
 
 $newId = (int)$ins->insert_id;
-$ins->close(); $conn->close();
+$ins->close();
+
+// NEW: also create a Contact row for this user (phone/email optional)
+$insC = $conn->prepare("INSERT INTO Contacts (FirstName, LastName, Phone, Email, UserID) VALUES (?,?,?,?,?)");
+$insC->bind_param("ssssi", $first, $last, $phone, $email, $newId);
+if (!$insC->execute()) {
+  // not fatal for user creation, but report a clear error
+  $msg = "User created, but failed to create contact: " . $conn->error;
+  $insC->close(); $conn->close(); returnWithError($msg); exit;
+}
+$insC->close();
+
+$conn->close();
 returnWithInfo($first, $last, $newId);
 
+// ------- helpers -------
 function getRequestInfo() {
   $raw = file_get_contents('php://input');
   $data = json_decode($raw, true);
