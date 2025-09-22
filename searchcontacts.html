@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Search Contacts</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --card: rgba(255,255,255,0.04);
+      --card-border: rgba(255,255,255,0.10);
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent1: #3b82f6;
+      --accent2: #2563eb;
+      --danger: #ef4444;
+      --row: rgba(255,255,255,0.03);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+    }
+    .container { max-width: 980px; margin: 0 auto; padding: 24px; }
+    .page-title { font-size: 20px; font-weight: 600; letter-spacing: .2px; margin: 8px 0 24px; color: #fff; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 40px -10px rgba(0,0,0,.65);
+    }
+    .label { font-size: 12px; color: var(--muted); margin-bottom: 6px; display: block; }
+    .input, .button, .endpoint {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      padding: 10px 12px;
+      outline: none;
+    }
+    .input::placeholder { color: #718096; }
+    .input:focus, .endpoint:focus {
+      border-color: rgba(59,130,246,.5);
+      box-shadow: 0 0 0 3px rgba(59,130,246,.15);
+    }
+    .row { display: grid; grid-template-columns: 1fr; gap: 14px; }
+    @media (min-width: 700px) {
+      .row { grid-template-columns: 3fr 1fr auto; }
+    }
+    .button {
+      cursor: pointer;
+      background: linear-gradient(to bottom, var(--accent1), var(--accent2));
+      border: none;
+      font-weight: 600;
+      box-shadow: 0 10px 20px -6px rgba(37,99,235,.55);
+    }
+    .button:disabled { opacity: .6; cursor: not-allowed; }
+    details { margin-top: 8px; }
+    summary { color: var(--muted); cursor: pointer; font-size: 12px; }
+    .endpoint { margin-top: 8px; }
+    .error {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(239,68,68,.35);
+      background: rgba(239,68,68,.12);
+      color: #fecaca;
+      font-size: 14px;
+    }
+    .table-wrap {
+      margin-top: 18px;
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: rgba(255,255,255,.05); color: var(--muted); text-transform: uppercase; font-size: 12px; letter-spacing: .4px; }
+    th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid rgba(255,255,255,.06); }
+    tbody tr:hover { background: var(--row); }
+    .empty {
+      padding: 36px;
+      text-align: center;
+      color: var(--muted);
+      background: rgba(255,255,255,.02);
+    }
+    .shimmer-row {
+      height: 42px;
+      background: linear-gradient(90deg, rgba(255,255,255,.06), rgba(255,255,255,.03), rgba(255,255,255,.06));
+      background-size: 200% 100%;
+      animation: shimmer 1.25s infinite;
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .badge { font-size: 11px; color: var(--muted); border: 1px solid var(--card-border); padding: 2px 8px; border-radius: 999px; }
+    .muted { color: var(--muted); }
+    .footer { text-align: center; padding: 16px 0 6px; color: var(--muted); font-size: 12px; }
+
+.logout-btn {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: linear-gradient(to bottom, var(--accent1), var(--accent2));
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px -4px rgba(37,99,235,.55);
+}
+.logout-btn:hover {
+  opacity: 0.9;
+}
+  </style>
+</head>
+<body>
+  <div class="container">
+<!-- Logout button at top right -->
+  <button id="logoutBtn" class="logout-btn">Logout</button>
+    <h1 class="page-title">Search Contacts</h1>
+    <div class="card">
+      <div class="row">
+        <div>
+          <label class="label" for="q">Search</label>
+          <input id="q" class="input" placeholder="e.g., Team, 555, @gmail.com" />
+        </div>
+        <div>
+          <label class="label" for="uid">User ID</label>
+          <input id="uid" class="input" value="1" type="number" inputmode="numeric" />
+        </div>
+        <div style="display:flex; align-items:flex-end;">
+          <button id="go" class="button">Search</button>
+        </div>
+      </div>
+
+      <div id="error" class="error" style="display:none;"></div>
+
+      <div class="table-wrap" id="resultsWrap">
+        <div id="loading" style="display:none;">
+          <div class="shimmer-row"></div>
+          <div class="shimmer-row"></div>
+          <div class="shimmer-row"></div>
+        </div>
+        <div id="empty" class="empty">No results yet. Try a search.</div>
+        <table id="results" style="display:none;">
+          <thead>
+            <tr>
+              <th>Name</th><th>Phone</th><th>Email</th><th>ID</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+<input type="hidden" id="endpoint" value="http://129.212.179.109/LAMPAPI/SearchContact.php">
+  </div>
+
+ <script>
+  const qEl = document.getElementById('q');
+  const uidEl = document.getElementById('uid');
+  const goEl = document.getElementById('go');
+  const endpointEl = document.getElementById('endpoint');
+  const errorEl = document.getElementById('error');
+  const loadingEl = document.getElementById('loading');
+  const emptyEl = document.getElementById('empty');
+  const tableEl = document.getElementById('results');
+  const tbodyEl = tableEl.querySelector('tbody');
+
+  function setState({loading=false, error='', rows=null}) {
+    // NEW: prevent double-clicks
+    goEl.disabled = loading;
+
+    errorEl.style.display = error ? 'block' : 'none';
+    errorEl.textContent = error || '';
+    loadingEl.style.display = loading ? 'block' : 'none';
+    if (rows === null) return;
+
+    // Update table
+    tbodyEl.innerHTML = '';
+    if (!rows || rows.length === 0) {
+      tableEl.style.display = 'none';
+      emptyEl.style.display = 'block';
+    } else {
+      emptyEl.style.display = 'none';
+      tableEl.style.display = 'table';
+      for (const r of rows) {
+        const tr = document.createElement('tr');
+        const name = `${r.firstName || ''} ${r.lastName || ''}`.trim();
+        tr.innerHTML = `
+          <td><strong>${escapeHtml(name || '—')}</strong></td>
+          <td class="muted">${escapeHtml(r.phone || '—')}</td>
+          <td class="muted">${escapeHtml(r.email || '—')}</td>
+          <td><span class="badge">#${escapeHtml(r.id)}</span></td>
+        `;
+        tbodyEl.appendChild(tr);
+      }
+    }
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>'"]/g, c => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      "'": '&#39;',
+      '"': '&quot;'
+    }[c]));
+  }
+
+  async function runSearch() {
+  setState({loading:true, error:'', rows:null});
+  try {
+    // Guard: make sure endpoint exists
+    if (!endpointEl || !endpointEl.value.trim()) {
+      setState({ loading:false, error:'Endpoint missing.', rows:[] });
+      return;
+    }
+    const endpoint = endpointEl.value.trim();
+
+    // Guard: make sure User ID is entered
+    const uid = String(uidEl.value || '').trim();
+    if (!uid) {
+      setState({ loading:false, error:'Enter a User ID.', rows:[] });
+      return;
+    }
+
+    const body = {
+      search: (qEl.value || '').trim(),
+      userId: uid
+    };
+
+    // Fetch with stricter handling
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    let data;
+    try {
+      data = await res.json();
+    } catch {
+      throw new Error('Invalid JSON from server');
+    }
+
+   if (data && Array.isArray(data.results)) {
+  if (data.results.length === 0) {
+    // show a friendly error instead of silent "no results"
+    setState({ loading:false, error:'No contacts found for that User ID.', rows: [] });
+  } else {
+    setState({ loading:false, error:'', rows: data.results });
+  }
+} else if (data && data.error) {
+  setState({ loading:false, error: data.error || 'Unknown error', rows: [] });
+} else {
+  setState({ loading:false, error: 'Unexpected response', rows: [] });
+}
+} catch (e) {
+  setState({ loading:false, error: (e && e.message) ? e.message : String(e), rows: [] });
+}
+}
+  goEl.addEventListener('click', runSearch);
+  qEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') runSearch(); });
+  uidEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') runSearch(); });
+  document.getElementById('logoutBtn').addEventListener('click', () => {window.location.href = 'index.html';});
+
+  // Optional: auto-run once
+  // runSearch();
+</script>
+
+</body>
+</html>

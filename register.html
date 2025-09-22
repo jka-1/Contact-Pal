@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Register</title>
+  <link rel="preconnect" href="/" />
+  <style>
+    /* reuse same minimal styles to match look */
+    :root { --bg:#0f172a; --muted:#94a3b8; --text:#e5e7eb; --accent:#3b82f6; --accent2:#2563eb; --ring:rgba(59,130,246,.35); }
+    *{box-sizing:border-box} html,body{height:100%} body{margin:0;display:grid;place-items:center;background:radial-gradient(60vw 60vh at 80% -10%, rgba(59,130,246,.08), transparent 60%),radial-gradient(40vw 40vh at -10% 110%, rgba(16,185,129,.08), transparent 60%),#0f172a;color:var(--text);font-family:Inter,system-ui,Arial,sans-serif}
+    .card{width:min(92vw,420px);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:28px;backdrop-filter:blur(8px);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+    label{display:block;font-size:12px;color:var(--muted);margin:12px 0 6px}
+    input{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(148,163,184,.25);background:rgba(17,24,39,.65);color:var(--text);outline:none;transition:box-shadow .18s,border-color .18s,background .18s}
+    input:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--ring);background:rgba(17,24,39,.9)}
+    .btn{width:100%;margin-top:16px;padding:12px 14px;border-radius:10px;border:none;cursor:pointer;background:linear-gradient(180deg,var(--accent),var(--accent2));color:white;font-weight:600;box-shadow:0 10px 22px rgba(37,99,235,.25)}
+    .muted{color:var(--muted);font-size:13px;margin-top:14px;text-align:center}
+    .alert{margin-top:12px;border-radius:10px;padding:10px 12px;font-size:13px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Register</h1>
+    <p class="muted">Create an account to get started.</p>
+
+    <form onsubmit="doRegister(); return false;">
+      <!-- NEW: first and last name (required) -->
+      <label for="registerFirstName">First name</label>
+      <input id="registerFirstName" name="registerFirstName" type="text" required />
+
+      <label for="registerLastName">Last name</label>
+      <input id="registerLastName" name="registerLastName" type="text" required />
+
+      <!-- existing login/username -->
+      <label for="registerName">Login / Username</label>
+      <input id="registerName" name="registerName" type="text" required />
+
+      <label for="registerPassword">Password</label>
+      <input id="registerPassword" name="registerPassword" type="password" required />
+
+      <label for="registerConfirm">Confirm password</label>
+      <input id="registerConfirm" name="registerConfirm" type="password" required />
+
+      <button class="btn" type="submit">Create account</button>
+      <div id="registerResult" class="alert"></div>
+    </form>
+
+    <p class="muted"><a href="index.html" style="color:#3b82f6;font-weight:600;text-decoration:none;">Back to login</a></p>
+  </div>
+
+  <!-- shim so code.js can call showLogin() if we want -->
+  <script>function showLogin(){ window.location.href='index.html'; }</script>
+  <script src="js/md5.js"></script>
+  <script src="js/code.js"></script>
+</body>
+</html>
