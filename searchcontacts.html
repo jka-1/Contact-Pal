@@ -88,12 +88,9 @@
   <!-- Top navigation -->
   <nav class="topnav" role="navigation" aria-label="Primary">
     <div class="topnav-inner">
-      <div class="brand" aria-label="palbook home">
-        <div class="logo" aria-hidden="true">p</div>
-        <div class="text">palbook</div>
-      </div>
-      <button id="logoutBtn" class="logout-btn">Log out</button>
-    </div>
+      <div class="brand" aria-label="Palbook home">
+  <div class="text">Palbook</div></div>
+      <button id="logoutBtn" class="logout-btn">Log out</button></div>
   </nav>
 
   <div class="container">
@@ -245,7 +242,7 @@
         <td><strong>${escapeHtml(name || '—')}</strong></td>
         <td class="muted">${escapeHtml(r.phone || '—')}</td>
         <td class="muted">${escapeHtml(r.email || '—')}</td>
-        <td><span class="badge">#${escapeHtml(r.id)}</span></td>
+        <td><span class="badge">#${escapeHtml(r.userId ?? r.UserID ?? r.userid ?? '—')}</span></td>
         <td style="display:flex; gap:8px;">
           <button class="pill edit" data-id="${r.id}">Edit</button>
           <button class="pill delete" data-id="${r.id}">Delete</button>
