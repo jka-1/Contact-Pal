@@ -5,94 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Search & Manage Contacts</title>
   <style>
-    :root {
-      --bg: #0b1220;
-      --card: rgba(255,255,255,0.04);
-      --card-border: rgba(255,255,255,0.10);
-      --text: #e5e7eb;
-      --muted: #94a3b8;
-      --accent1: #3b82f6;
-      --accent2: #2563eb;
-      --danger: #ef4444;
-      --row: rgba(255,255,255,0.03);
-      --success: #10b981;
+    :root{
+      --bg:#0b1220;--card:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.10);
+      --text:#e5e7eb;--muted:#94a3b8;--accent1:#3b82f6;--accent2:#2563eb;--danger:#ef4444;--row:rgba(255,255,255,0.03);--success:#10b981;
     }
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; background: var(--bg); color: var(--text); line-height: 1.45; }
-    .container { max-width: 980px; margin: 0 auto; padding: 24px; position: relative; }
-    .page-title { font-size: 20px; font-weight: 600; margin: 8px 0 24px; color: #fff; }
-    .card { background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 20px; box-shadow: 0 10px 40px -10px rgba(0,0,0,.65); }
-    .label { font-size: 12px; color: var(--muted); margin-bottom: 6px; display: block; }
-    .input, .button, .endpoint {
-      width: 100%; border-radius: 12px; border: 1px solid var(--card-border);
-      background: rgba(255,255,255,0.06); color: var(--text); padding: 10px 12px; outline: none;
-    }
-    .button {
-      cursor: pointer; background: linear-gradient(to bottom, var(--accent1), var(--accent2));
-      border: none; font-weight: 600; box-shadow: 0 10px 20px -6px rgba(37,99,235,.55);
-    }
-    .secondary-btn { cursor:pointer; border:1px solid var(--card-border); background: rgba(255,255,255,0.06); font-weight:600; }
-    .add-btn {cursor: pointer;border: none;background: #10b981; /* Tailwind's green-500 */font-weight: 600;color: #fff;padding: 10px 16px;border-radius: 12px;box-shadow: 0 4px 12px -4px rgba(16,185,129,.55);}.add-btn:hover { opacity: 0.9; }
-    .danger-btn { background: var(--danger); border:none; color:#fff; font-weight:600; cursor:pointer; }
-    .delete-btn { background: var(--danger); border: none; color: #fff; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; }
-    .delete-btn:hover { opacity: 0.9; }
-    th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid rgba(255,255,255,.06); }
-    tbody tr:hover { background: var(--row); }
-    .logout-btn { position: absolute; top: 16px; right: 20px; background: linear-gradient(to bottom, var(--accent1), var(--accent2)); color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px -4px rgba(37,99,235,.55); }
-    .row { display:grid; grid-template-columns: 1fr 160px auto auto; gap: 12px; align-items:end; }
-
-    /* Empty / shimmer */
-    .empty { color: var(--muted); text-align:center; padding: 20px; }
-    .table-wrap {
-  margin-top: 16px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-    .badge { display:inline-block; font-size:12px; color:#cbd5e1; }
-
-	/* Dimmed cells used for phone/email in rows */
-	.muted { color: var(--muted); }
-
-	/* Prevent iOS zoom-on-focus */
-	input, select, textarea { font-size: 16px; }
-
+    *{box-sizing:border-box}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";background:var(--bg);color:var(--text);line-height:1.45}
+    .container{max-width:980px;margin:0 auto;padding:24px;position:relative}
+    .page-title{font-size:20px;font-weight:600;margin:8px 0 24px;color:#fff}
+    .card{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:20px;box-shadow:0 10px 40px -10px rgba(0,0,0,.65)}
+    .label{font-size:12px;color:var(--muted);margin-bottom:6px;display:block}
+    .input,.button,.endpoint{width:100%;border-radius:12px;border:1px solid var(--card-border);background:rgba(255,255,255,0.06);color:var(--text);padding:10px 12px;outline:none}
+    .button{cursor:pointer;background:linear-gradient(to bottom,var(--accent1),var(--accent2));border:none;font-weight:600;box-shadow:0 10px 20px -6px rgba(37,99,235,.55)}
+    .secondary-btn{cursor:pointer;border:1px solid var(--card-border);background:rgba(255,255,255,0.06);font-weight:600}
+    .add-btn{cursor:pointer;border:none;background:#10b981;font-weight:600;color:#fff;padding:10px 16px;border-radius:12px;box-shadow:0 4px 12px -4px rgba(16,185,129,.55)}
+    .add-btn:hover{opacity:.9}
+    .danger-btn{background:var(--danger);border:none;color:#fff;font-weight:600;cursor:pointer}
+    .row{display:grid;grid-template-columns:1fr 160px auto auto;gap:12px;align-items:end}
+    th,td{padding:12px 14px;text-align:left;border-bottom:1px solid rgba(255,255,255,.06)}
+    tbody tr:hover{background:var(--row)}
+    .logout-btn{position:absolute;top:16px;right:20px;background:linear-gradient(to bottom,var(--accent1),var(--accent2));color:#fff;border:none;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer;box-shadow:0 4px 12px -4px rgba(37,99,235,.55)}
+    .table-wrap{margin-top:16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .empty{color:var(--muted);text-align:center;padding:20px}
+    .badge{display:inline-block;font-size:12px;color:#cbd5e1}
+    .muted{color:var(--muted)}
+    input,select,textarea{font-size:16px}
+    .pill{border:none;color:#fff;padding:6px 10px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600}
+    .pill.edit{background:#6366f1}
+    .pill.delete{background:var(--danger)}
+    .pill:hover{opacity:.9}
     /* Modal */
-    .modal-backdrop { position: fixed; inset: 0; background: #000; display:none; align-items: center; justify-content: center; z-index: 50; }
-    .modal { width: 560px; max-width: 94vw; background: #111827; border:1px solid var(--card-border); border-radius: 16px; box-shadow: 0 20px 60px -20px rgba(0,0,0,.8); }
-    .modal header, .modal footer { padding: 16px 18px; border-bottom:1px solid var(--card-border); }
-    .modal footer { border-top:1px solid var(--card-border); border-bottom:none; display:flex; gap:10px; justify-content:flex-end; }
-    .modal .content { padding: 16px 18px; }
-    .grid-2 { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .hint { font-size:12px; color: var(--muted); margin-top: 8px; }
-    .err { background: rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.3); color:#fecaca; padding:8px 10px; border-radius:8px; margin-bottom:10px; display:none; }
-    .ok { background: rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.3); color:#bbf7d0; padding:8px 10px; border-radius:8px; margin-bottom:10px; display:none; }
-
- @media (max-width: 720px){
-  /* Stack the search row */
-  .row {
-    grid-template-columns: 1fr;
-    gap: 10px;
-    align-items: stretch;
-  }
-
-  /* Full-width buttons on mobile; allow shrinking */
-  .button, .add-btn {
-    width: 100%;
-    min-width: 0 !important;
-  }
-
-  /* One-column modal form */
-  .grid-2 { grid-template-columns: 1fr; }
-
-  /* Keep logout button from overlapping content */
-  .logout-btn { position: static; width: 100%; margin-bottom: 8px; }
-
-  /* Slightly tighter cells; wrap long text */
-  th, td { padding: 10px 12px; }
-  td { word-break: break-word; }
-}
-
-
+    .modal-backdrop{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;z-index:50}
+    .modal{width:560px;max-width:94vw;background:#111827;border:1px solid var(--card-border);border-radius:16px;box-shadow:0 20px 60px -20px rgba(0,0,0,.8)}
+    .modal header,.modal footer{padding:16px 18px;border-bottom:1px solid var(--card-border)}
+    .modal footer{border-top:1px solid var(--card-border);border-bottom:none;display:flex;gap:10px;justify-content:flex-end}
+    .modal .content{padding:16px 18px}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .hint{font-size:12px;color:var(--muted);margin-top:8px}
+    .err{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#fecaca;padding:8px 10px;border-radius:8px;margin-bottom:10px;display:none}
+    .ok{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);color:#bbf7d0;padding:8px 10px;border-radius:8px;margin-bottom:10px;display:none}
+    @media (max-width:720px){
+      .row{grid-template-columns:1fr;gap:10px;align-items:stretch}
+      .button,.add-btn{width:100%;min-width:0!important}
+      .grid-2{grid-template-columns:1fr}
+      .logout-btn{position:static;width:100%;margin-bottom:8px}
+      th,td{padding:10px 12px}
+      td{word-break:break-word}
+    }
   </style>
 </head>
 <body>
@@ -123,7 +82,7 @@
         <table id="results" style="display:none; width:100%;">
           <thead>
             <tr>
-              <th>Name</th><th>Phone</th><th>Email</th><th>ID</th><th>Action</th>
+              <th>Name</th><th>Phone</th><th>Email</th><th>ID</th><th>Actions</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -135,39 +94,23 @@
     <input type="hidden" id="endpoint" value="http://129.212.179.109/LAMPAPI/SearchContact.php">
     <input type="hidden" id="deleteEndpoint" value="http://129.212.179.109/LAMPAPI/DeleteContact.php">
     <input type="hidden" id="addEndpoint" value="http://129.212.179.109/LAMPAPI/AddContact.php">
+    <input type="hidden" id="updateEndpoint" value="http://129.212.179.109/LAMPAPI/UpdateContact.php">
   </div>
 
   <!-- Add Contact Modal -->
   <div class="modal-backdrop" id="addModal">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="addTitle">
-      <header>
-        <h2 id="addTitle" style="margin:0; font-size:18px;">Add Contact</h2>
-      </header>
+      <header><h2 id="addTitle" style="margin:0; font-size:18px;">Add Contact</h2></header>
       <div class="content">
         <div id="addErr" class="err"></div>
         <div class="grid-2">
-          <div>
-            <label class="label" for="firstName">First name</label>
-            <input id="firstName" class="input" maxlength="64" required />
-          </div>
-          <div>
-            <label class="label" for="lastName">Last name</label>
-            <input id="lastName" class="input" maxlength="64" required />
-          </div>
-          <div>
-            <label class="label" for="phone">Phone</label>
-            <input id="phone" class="input" placeholder="e.g., 5551234567" maxlength="32" required />
-          </div>
-          <div>
-            <label class="label" for="email">Email</label>
-            <input id="email" class="input" type="email" maxlength="128" required />
-          </div>
-	<div>
-  		<label class="label" for="userIdAdd">User ID</label>
-  		<input id="userIdAdd" class="input" type="number" inputmode="numeric" min="1" step="1" value="1" required />
-	</div>
+          <div><label class="label" for="firstName">First name</label><input id="firstName" class="input" maxlength="64" required /></div>
+          <div><label class="label" for="lastName">Last name</label><input id="lastName" class="input" maxlength="64" required /></div>
+          <div><label class="label" for="phone">Phone</label><input id="phone" class="input" placeholder="e.g., 5551234567" maxlength="32" required /></div>
+          <div><label class="label" for="email">Email</label><input id="email" class="input" type="email" maxlength="128" required /></div>
+          <div><label class="label" for="userIdAdd">User ID</label><input id="userIdAdd" class="input" type="number" inputmode="numeric" min="1" step="1" value="1" required /></div>
         </div>
-        <p class="hint">We only send <em>firstName</em>, <em>lastName</em>, <em>phone</em>, <em>email</em>, and <em>userId</em> to the API.</p>
+        <p class="hint">We send <em>firstName</em>, <em>lastName</em>, <em>phone</em>, <em>email</em>, and <em>userId</em> to the API.</p>
       </div>
       <footer>
         <button class="danger-btn" id="cancelAdd">Cancel</button>
@@ -176,20 +119,45 @@
     </div>
   </div>
 
+  <!-- Edit / Update Contact Modal -->
+  <div class="modal-backdrop" id="editModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+      <header><h2 id="editTitle" style="margin:0; font-size:18px;">Update Contact</h2></header>
+      <div class="content">
+        <div id="editErr" class="err"></div>
+        <input type="hidden" id="editContactId" />
+        <div class="grid-2">
+          <div><label class="label" for="editFirstName">First name</label><input id="editFirstName" class="input" maxlength="64" required /></div>
+          <div><label class="label" for="editLastName">Last name</label><input id="editLastName" class="input" maxlength="64" required /></div>
+          <div><label class="label" for="editPhone">Phone</label><input id="editPhone" class="input" maxlength="32" required /></div>
+          <div><label class="label" for="editEmail">Email</label><input id="editEmail" class="input" type="email" maxlength="128" required /></div>
+          <div><label class="label" for="userIdEdit">User ID</label><input id="userIdEdit" class="input" type="number" inputmode="numeric" min="1" step="1" value="1" required /></div>
+        </div>
+        <p class="hint">We send <em>contactId</em>, <em>userId</em>, plus the edited fields.</p>
+      </div>
+      <footer>
+        <button class="danger-btn" id="cancelEdit">Cancel</button>
+        <button class="button" id="saveEdit">Update contact</button>
+      </footer>
+    </div>
+  </div>
+
 <script>
+  // Elements
   const qEl = document.getElementById('q');
   const uidEl = document.getElementById('uid');
   const goEl = document.getElementById('go');
   const endpointEl = document.getElementById('endpoint');
   const deleteEndpointEl = document.getElementById('deleteEndpoint');
   const addEndpointEl = document.getElementById('addEndpoint');
+  const updateEndpointEl = document.getElementById('updateEndpoint');
   const errorEl = document.getElementById('error');
   const okEl = document.getElementById('ok');
   const emptyEl = document.getElementById('empty');
   const tableEl = document.getElementById('results');
   const tbodyEl = tableEl.querySelector('tbody');
 
-  // Modal bits
+  // Add modal
   const addModal = document.getElementById('addModal');
   const addBtn = document.getElementById('addBtn');
   const cancelAdd = document.getElementById('cancelAdd');
@@ -201,32 +169,36 @@
   const emailEl = document.getElementById('email');
   const userIdAddEl = document.getElementById('userIdAdd');
 
+  // Edit modal
+  const editModal = document.getElementById('editModal');
+  const cancelEdit = document.getElementById('cancelEdit');
+  const saveEdit = document.getElementById('saveEdit');
+  const editErr = document.getElementById('editErr');
+  const editIdEl = document.getElementById('editContactId');
+  const editFirstEl = document.getElementById('editFirstName');
+  const editLastEl = document.getElementById('editLastName');
+  const editPhoneEl = document.getElementById('editPhone');
+  const editEmailEl = document.getElementById('editEmail');
+  const userIdEditEl = document.getElementById('userIdEdit');
 
-  function showAddModal(){
-    addErr.style.display = 'none'; addErr.textContent = '';
-if (uidEl.value) userIdAddEl.value = uidEl.value; else userIdAddEl.value = 1;
-    addModal.style.display = 'flex';
-    setTimeout(()=> firstNameEl.focus(), 0);
-  }
-  function hideAddModal(){ addModal.style.display = 'none'; }
-
-  addBtn.addEventListener('click', showAddModal);
-  cancelAdd.addEventListener('click', hideAddModal);
-  addModal.addEventListener('click', (e)=> { if(e.target === addModal) hideAddModal(); });
-
+  // Utilities
+  function escapeHtml(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\'':'&#39;','"':'&quot;'}[c]))}
   function showError(msg){ errorEl.textContent = msg; errorEl.style.display = msg ? 'block' : 'none'; }
   function showOk(msg){ okEl.textContent = msg; okEl.style.display = msg ? 'block' : 'none'; setTimeout(()=> okEl.style.display='none', 2500); }
+  function validateEmail(email){ if(!email) return true; return /.+@.+\..+/.test(email); }
+  function sanitizePhone(p){ return (p||'').replace(/[^0-9+().\-\s]/g,'').trim(); }
 
+  // Render rows
   function setRows(rows){
     tbodyEl.innerHTML = '';
-    if (!rows || rows.length === 0) {
+    if (!rows || rows.length === 0){
       tableEl.style.display = 'none';
       emptyEl.style.display = 'block';
       return;
     }
     emptyEl.style.display = 'none';
     tableEl.style.display = 'table';
-    for (const r of rows) {
+    for (const r of rows){
       const tr = document.createElement('tr');
       const name = `${r.firstName || ''} ${r.lastName || ''}`.trim();
       tr.innerHTML = `
@@ -234,62 +206,67 @@ if (uidEl.value) userIdAddEl.value = uidEl.value; else userIdAddEl.value = 1;
         <td class="muted">${escapeHtml(r.phone || '—')}</td>
         <td class="muted">${escapeHtml(r.email || '—')}</td>
         <td><span class="badge">#${escapeHtml(r.id)}</span></td>
-        <td><button class="delete-btn" data-id="${r.id}">Delete</button></td>
+        <td style="display:flex; gap:8px;">
+          <button class="pill edit" data-id="${r.id}">Edit</button>
+          <button class="pill delete" data-id="${r.id}">Delete</button>
+        </td>
       `;
       tbodyEl.appendChild(tr);
     }
-    tbodyEl.querySelectorAll('.delete-btn').forEach(btn => {
-      btn.addEventListener('click', () => deleteContact(btn.dataset.id));
+    tbodyEl.querySelectorAll('.pill.delete').forEach(btn=>{
+      btn.addEventListener('click',()=>deleteContact(btn.dataset.id));
+    });
+    tbodyEl.querySelectorAll('.pill.edit').forEach(btn=>{
+      btn.addEventListener('click',()=>openEdit(btn.dataset.id));
     });
   }
 
-  function escapeHtml(s) { return String(s).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\'':'&#39;','"':'&quot;'}[c])); }
-
-  async function runSearch() {
+  // API calls
+  async function runSearch(){
     showError('');
-    try {
+    try{
       const endpoint = endpointEl.value.trim();
       const uid = String(uidEl.value || '').trim();
       if (!uid) throw new Error('Enter a User ID.');
-      const body = { search: (qEl.value || '').trim(), userId: uid };
-      const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const body = { search: (qEl.value || '').trim(), userId: Number(uid) };
+      const res = await fetch(endpoint,{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      if (data && Array.isArray(data.results)) setRows(data.results); else throw new Error(data.error || 'Unexpected response');
-    } catch (e) { setRows([]); showError(e.message || String(e)); }
+      if (data && Array.isArray(data.results)) setRows(data.results);
+      else throw new Error(data.error || 'Unexpected response');
+    }catch(e){ setRows([]); showError(e.message || String(e)); }
   }
 
-  async function deleteContact(id) {
-    if (!confirm('Are you sure you want to delete this contact?')) return;
+  async function deleteContact(id){
+    if (!confirm('Delete this contact?')) return;
     const endpoint = deleteEndpointEl.value.trim();
     const idNum = Number(id);
     const userIdNum = Number(uidEl.value);
-    try {
+    try{
       if (!Number.isInteger(idNum)) throw new Error('Invalid contact id');
       if (!Number.isInteger(userIdNum)) throw new Error('Invalid user id');
-      const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contactId: idNum, userId: userIdNum }) });
+      const res = await fetch(endpoint,{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ contactId:idNum, userId:userIdNum }) });
       const text = await res.text();
-      let data; try { data = JSON.parse(text); } catch { data = { raw: text }; }
-      if (!res.ok) throw new Error(`HTTP ${res.status}${data?.error ? ` - ${data.error}` : ''}`);
+      let data; try{ data = JSON.parse(text)}catch{ data = { raw:text } }
+      if (!res.ok) throw new Error(`HTTP ${res.status}${data?.error?` - ${data.error}`:''}`);
       if (data?.error) throw new Error(data.error);
       showOk('Contact deleted.');
       runSearch();
-    } catch (e) { alert('Delete failed: ' + (e?.message || e)); }
+    }catch(e){ alert('Delete failed: ' + (e?.message || e)); }
   }
 
-  function validateEmail(email){ if(!email) return true; return /.+@.+\..+/.test(email); }
-  function sanitizePhone(p){ return (p||'').replace(/[^0-9+().\-\s]/g, '').trim(); }
-
+  // Add contact
+  function showAddModal(){ addErr.style.display='none'; addErr.textContent=''; userIdAddEl.value = uidEl.value || 1; addModal.style.display='flex'; setTimeout(()=>firstNameEl.focus(),0); }
+  function hideAddModal(){ addModal.style.display='none'; }
   async function addContact(){
-    addErr.style.display = 'none'; addErr.textContent = '';
+    addErr.style.display='none'; addErr.textContent='';
     const endpoint = addEndpointEl.value.trim();
     const userIdNum = Number(userIdAddEl.value || uidEl.value || 1);
-    const firstName = (firstNameEl.value || '').trim();
-    const lastName = (lastNameEl.value || '').trim();
+    const firstName = (firstNameEl.value||'').trim();
+    const lastName = (lastNameEl.value||'').trim();
     const phone = sanitizePhone(phoneEl.value);
-    const email = (emailEl.value || '').trim();
-
-    try {
+    const email = (emailEl.value||'').trim();
+    try{
       if (!Number.isInteger(userIdNum)) throw new Error('Invalid user id');
       if (!firstName) throw new Error('First name is required.');
       if (!lastName) throw new Error('Last name is required.');
@@ -298,31 +275,96 @@ if (uidEl.value) userIdAddEl.value = uidEl.value; else userIdAddEl.value = 1;
       if (email && !validateEmail(email)) throw new Error('Invalid email format');
 
       const payload = { firstName, lastName, phone, email, userId: userIdNum };
-
-      const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const res = await fetch(endpoint,{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
       const text = await res.text();
-      let data; try { data = JSON.parse(text); } catch { data = { raw: text }; }
-
-      if (!res.ok) throw new Error(`HTTP ${res.status}${data?.error ? ` - ${data.error}` : ''}`);
+      let data; try{ data = JSON.parse(text)}catch{ data = { raw:text } }
+      if (!res.ok) throw new Error(`HTTP ${res.status}${data?.error?` - ${data.error}`:''}`);
       if (data?.error) throw new Error(data.error);
 
       hideAddModal();
       showOk('Contact added.');
-      // Clear fields for next time
       firstNameEl.value = lastNameEl.value = phoneEl.value = emailEl.value = '';
-      // Refresh list (try to show the new contact based on name/email if searchable)
       runSearch();
-    } catch (e) {
+    }catch(e){
       addErr.textContent = e?.message || String(e);
       addErr.style.display = 'block';
     }
   }
-  document.getElementById('logoutBtn').addEventListener('click', () => { window.location.href = 'index.html'; });
+
+  // Edit/Update contact
+  function showEditModal(){ editErr.style.display='none'; editErr.textContent=''; editModal.style.display='flex'; setTimeout(()=>editFirstEl.focus(),0); }
+  function hideEditModal(){ editModal.style.display='none'; }
+  function openEdit(id){
+    // Find the row’s current values from the table cells
+    const tr = [...tbodyEl.querySelectorAll('tr')].find(r => r.querySelector('.pill.edit')?.dataset.id === String(id));
+    if (!tr) return;
+    const [nameTd, phoneTd, emailTd] = tr.querySelectorAll('td');
+    const [first, ...rest] = (nameTd.textContent || '').trim().split(' ');
+    const last = rest.join(' ');
+    editIdEl.value = Number(id);
+    userIdEditEl.value = uidEl.value || 1;
+    editFirstEl.value = first || '';
+    editLastEl.value = last || '';
+    editPhoneEl.value = (phoneTd.textContent || '').trim();
+    editEmailEl.value = (emailTd.textContent || '').trim();
+    showEditModal();
+  }
+  async function updateContact(){
+    editErr.style.display='none'; editErr.textContent='';
+    const endpoint = updateEndpointEl.value.trim();
+    const contactId = Number(editIdEl.value);
+    const userId = Number(userIdEditEl.value || uidEl.value || 1);
+    const firstName = (editFirstEl.value||'').trim();
+    const lastName = (editLastEl.value||'').trim();
+    const phone = sanitizePhone(editPhoneEl.value);
+    const email = (editEmailEl.value||'').trim();
+    try{
+      if (!Number.isInteger(contactId)) throw new Error('Invalid contact id');
+      if (!Number.isInteger(userId)) throw new Error('Invalid user id');
+      if (!firstName) throw new Error('First name is required.');
+      if (!lastName) throw new Error('Last name is required.');
+      if (!phone) throw new Error('Phone number is required.');
+      if (!email) throw new Error('Email is required.');
+      if (email && !validateEmail(email)) throw new Error('Invalid email format');
+
+      const payload = { contactId, userId, firstName, lastName, phone, email };
+      const res = await fetch(endpoint,{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      const text = await res.text();
+      let data; try{ data = JSON.parse(text)}catch{ data = { raw:text } }
+      if (!res.ok) throw new Error(`HTTP ${res.status}${data?.error?` - ${data.error}`:''}`);
+      if (data?.error) throw new Error(data.error);
+
+      hideEditModal();
+      showOk('Contact updated.');
+      runSearch();
+    }catch(e){
+      editErr.textContent = e?.message || String(e);
+      editErr.style.display = 'block';
+    }
+  }
+
+  // Wiring
+  document.getElementById('logoutBtn').addEventListener('click',()=>{ window.location.href='index.html'; });
   goEl.addEventListener('click', runSearch);
-  qEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') runSearch(); });
-  uidEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') runSearch(); });
+  qEl.addEventListener('keydown', e=>{ if (e.key==='Enter') runSearch(); });
+  uidEl.addEventListener('keydown', e=>{ if (e.key==='Enter') runSearch(); });
+
+  addBtn.addEventListener('click', ()=>{
+    userIdAddEl.value = uidEl.value || 1;
+    showAddModal();
+  });
+  document.getElementById('cancelAdd').addEventListener('click', hideAddModal);
+  addModal.addEventListener('click', e=>{ if (e.target===addModal) hideAddModal(); });
   saveAdd.addEventListener('click', addContact);
-  emailEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') addContact(); });
+  emailEl.addEventListener('keydown', e=>{ if (e.key==='Enter') addContact(); });
+
+  document.getElementById('cancelEdit').addEventListener('click', hideEditModal);
+  editModal.addEventListener('click', e=>{ if (e.target===editModal) hideEditModal(); });
+  saveEdit.addEventListener('click', updateContact);
+  editEmailEl.addEventListener('keydown', e=>{ if (e.key==='Enter') updateContact(); });
+
+  // Initial view
+  // (optional) runSearch();
 </script>
 </body>
 </html>
