@@ -32,6 +32,7 @@
       border: none; font-weight: 600; box-shadow: 0 10px 20px -6px rgba(37,99,235,.55);
     }
     .secondary-btn { cursor:pointer; border:1px solid var(--card-border); background: rgba(255,255,255,0.06); font-weight:600; }
+    .add-btn {cursor: pointer;border: none;background: #10b981; /* Tailwind's green-500 */font-weight: 600;color: #fff;padding: 10px 16px;border-radius: 12px;box-shadow: 0 4px 12px -4px rgba(16,185,129,.55);}.add-btn:hover { opacity: 0.9; }
     .danger-btn { background: var(--danger); border:none; color:#fff; font-weight:600; cursor:pointer; }
     .delete-btn { background: var(--danger); border: none; color: #fff; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; }
     .delete-btn:hover { opacity: 0.9; }
@@ -42,12 +43,22 @@
 
     /* Empty / shimmer */
     .empty { color: var(--muted); text-align:center; padding: 20px; }
-    .table-wrap { margin-top: 16px; }
+    .table-wrap {
+  margin-top: 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
     .badge { display:inline-block; font-size:12px; color:#cbd5e1; }
 
+	/* Dimmed cells used for phone/email in rows */
+	.muted { color: var(--muted); }
+
+	/* Prevent iOS zoom-on-focus */
+	input, select, textarea { font-size: 16px; }
+
     /* Modal */
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.6); display:none; align-items: center; justify-content: center; z-index: 50; }
-    .modal { width: 560px; max-width: 94vw; background: var(--card); border:1px solid var(--card-border); border-radius: 16px; box-shadow: 0 20px 60px -20px rgba(0,0,0,.8); }
+    .modal-backdrop { position: fixed; inset: 0; background: #000; display:none; align-items: center; justify-content: center; z-index: 50; }
+    .modal { width: 560px; max-width: 94vw; background: #111827; border:1px solid var(--card-border); border-radius: 16px; box-shadow: 0 20px 60px -20px rgba(0,0,0,.8); }
     .modal header, .modal footer { padding: 16px 18px; border-bottom:1px solid var(--card-border); }
     .modal footer { border-top:1px solid var(--card-border); border-bottom:none; display:flex; gap:10px; justify-content:flex-end; }
     .modal .content { padding: 16px 18px; }
@@ -56,9 +67,32 @@
     .err { background: rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.3); color:#fecaca; padding:8px 10px; border-radius:8px; margin-bottom:10px; display:none; }
     .ok { background: rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.3); color:#bbf7d0; padding:8px 10px; border-radius:8px; margin-bottom:10px; display:none; }
 
-    @media (max-width: 720px){
-      .row { grid-template-columns: 1fr 120px auto auto; }
-    }
+ @media (max-width: 720px){
+  /* Stack the search row */
+  .row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  /* Full-width buttons on mobile; allow shrinking */
+  .button, .add-btn {
+    width: 100%;
+    min-width: 0 !important;
+  }
+
+  /* One-column modal form */
+  .grid-2 { grid-template-columns: 1fr; }
+
+  /* Keep logout button from overlapping content */
+  .logout-btn { position: static; width: 100%; margin-bottom: 8px; }
+
+  /* Slightly tighter cells; wrap long text */
+  th, td { padding: 10px 12px; }
+  td { word-break: break-word; }
+}
+
+
   </style>
 </head>
 <body>
@@ -76,11 +110,8 @@
           <input id="uid" class="input" value="1" type="number" inputmode="numeric" />
         </div>
         <div style="display:flex; gap:10px;">
-          <button id="go" class="button" style="min-width:120px;">Search</button>
-          <button id="addBtn" class="secondary-btn" style="min-width:140px;">+ Add contact</button>
-        </div>
-        <div style="justify-self:end">
-          <button id="refreshBtn" class="secondary-btn">Refresh</button>
+          <button id="go" class="button">Search</button>
+          <button id="addBtn" class="add-btn">+ Add contact</button>
         </div>
       </div>
 
@@ -117,25 +148,29 @@
         <div class="grid-2">
           <div>
             <label class="label" for="firstName">First name</label>
-            <input id="firstName" class="input" maxlength="64" />
+            <input id="firstName" class="input" maxlength="64" required />
           </div>
           <div>
             <label class="label" for="lastName">Last name</label>
-            <input id="lastName" class="input" maxlength="64" />
+            <input id="lastName" class="input" maxlength="64" required />
           </div>
           <div>
             <label class="label" for="phone">Phone</label>
-            <input id="phone" class="input" placeholder="e.g., 5551234567" maxlength="32" />
+            <input id="phone" class="input" placeholder="e.g., 5551234567" maxlength="32" required />
           </div>
           <div>
             <label class="label" for="email">Email</label>
-            <input id="email" class="input" type="email" maxlength="128" />
+            <input id="email" class="input" type="email" maxlength="128" required />
           </div>
+	<div>
+  		<label class="label" for="userIdAdd">User ID</label>
+  		<input id="userIdAdd" class="input" type="number" inputmode="numeric" min="1" step="1" value="1" required />
+	</div>
         </div>
         <p class="hint">We only send <em>firstName</em>, <em>lastName</em>, <em>phone</em>, <em>email</em>, and <em>userId</em> to the API.</p>
       </div>
       <footer>
-        <button class="secondary-btn" id="cancelAdd">Cancel</button>
+        <button class="danger-btn" id="cancelAdd">Cancel</button>
         <button class="button" id="saveAdd">Save contact</button>
       </footer>
     </div>
@@ -164,9 +199,12 @@
   const lastNameEl = document.getElementById('lastName');
   const phoneEl = document.getElementById('phone');
   const emailEl = document.getElementById('email');
+  const userIdAddEl = document.getElementById('userIdAdd');
+
 
   function showAddModal(){
     addErr.style.display = 'none'; addErr.textContent = '';
+if (uidEl.value) userIdAddEl.value = uidEl.value; else userIdAddEl.value = 1;
     addModal.style.display = 'flex';
     setTimeout(()=> firstNameEl.focus(), 0);
   }
@@ -245,7 +283,7 @@
   async function addContact(){
     addErr.style.display = 'none'; addErr.textContent = '';
     const endpoint = addEndpointEl.value.trim();
-    const userIdNum = Number(uidEl.value);
+    const userIdNum = Number(userIdAddEl.value || uidEl.value || 1);
     const firstName = (firstNameEl.value || '').trim();
     const lastName = (lastNameEl.value || '').trim();
     const phone = sanitizePhone(phoneEl.value);
@@ -253,7 +291,10 @@
 
     try {
       if (!Number.isInteger(userIdNum)) throw new Error('Invalid user id');
-      if (!firstName && !lastName) throw new Error('Enter at least a first or last name.');
+      if (!firstName) throw new Error('First name is required.');
+      if (!lastName) throw new Error('Last name is required.');
+      if (!phone) throw new Error('Phone number is required.');
+      if (!email) throw new Error('Email is required.');
       if (email && !validateEmail(email)) throw new Error('Invalid email format');
 
       const payload = { firstName, lastName, phone, email, userId: userIdNum };
@@ -276,8 +317,6 @@
       addErr.style.display = 'block';
     }
   }
-
-  document.getElementById('refreshBtn').addEventListener('click', runSearch);
   document.getElementById('logoutBtn').addEventListener('click', () => { window.location.href = 'index.html'; });
   goEl.addEventListener('click', runSearch);
   qEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') runSearch(); });
