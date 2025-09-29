@@ -259,39 +259,32 @@
   }
 
   // API calls
-  async function runSearch(){
-    showError('');
-    try{
-      const endpoint = endpointEl.value.trim();
-      const uid = String(uidEl.value || '').trim();
-      if (!uid) throw new Error('Enter your palbook ID.');
-      const body = { search: (qEl.value || '').trim(), userId: Number(uid) };
-      const res = await fetch(endpoint,{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      if (data && Array.isArray(data.results)) setRows(data.results);
-      else throw new Error(data.error || 'Unexpected response');
-    }catch(e){ setRows([]); showError(e.message || String(e)); }
-  }
+async function runSearch(){
+  showError('');
+  try {
+    const endpoint = endpointEl.value.trim();
+    const uid = String(uidEl.value || '').trim();
+    if (!uid) throw new Error('Enter your palbook ID.');
 
-  async function deleteContact(id){
-    if (!confirm('Delete this contact?')) return;
-    const endpoint = deleteEndpointEl.value.trim();
-    const idNum = Number(id);
-    const userIdNum = Number(uidEl.value);
-    try{
-      if (!Number.isInteger(idNum)) throw new Error('Invalid contact id');
-      if (!Number.isInteger(userIdNum)) throw new Error('Invalid palbook ID');
-      const res = await fetch(endpoint,{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ contactId:idNum, userId:userIdNum }) });
-      const text = await res.text();
-      let data; try{ data = JSON.parse(text)}catch{ data = { raw:text } }
-      if (!res.ok) throw new Error(`HTTP ${res.status}${data?.error?` - ${data.error}`:''}`);
-      if (data?.error) throw new Error(data.error);
-      showOk('Contact deleted.');
-      runSearch();
-    }catch(e){ alert('Delete failed: ' + (e?.message || e)); }
-  }
+    let s = (qEl.value || '').trim();
+    if (s === '') s = '%';   // wildcard search
 
+    const body = { search: s, userId: Number(uid) };
+    const res = await fetch(endpoint, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+
+    if (data && Array.isArray(data.results)) setRows(data.results);
+    else throw new Error(data.error || 'Unexpected response');
+  } catch(e) {
+    setRows([]);
+    showError(e.message || String(e));
+  }
+}
   // Add contact
   function showAddModal(){ addErr.style.display='none'; addErr.textContent=''; userIdAddEl.value = uidEl.value || 1; addModal.style.display='flex'; setTimeout(()=>firstNameEl.focus(),0); }
   function hideAddModal(){ addModal.style.display='none'; }
@@ -399,6 +392,10 @@
   editModal.addEventListener('click', e=>{ if (e.target===editModal) hideEditModal(); });
   saveEdit.addEventListener('click', updateContact);
   editEmailEl.addEventListener('keydown', e=>{ if (e.key==='Enter') updateContact(); });
+window.addEventListener('DOMContentLoaded', () => {
+    uidEl.value = uidEl.value || 1;
+    runSearch();
+  });
 </script>
 </body>
 </html>

@@ -20,11 +20,21 @@
 	} 
 	else
 	{
-		$stmt = $conn->prepare("SELECT ID, FirstName, LastName, Phone, Email, UserID AS userId FROM Contacts WHERE (FirstName LIKE ? OR LastName LIKE ? OR Phone LIKE ? OR Email LIKE ?) AND UserID = ?");
 		$search   = isset($inData['search']) ? $inData['search'] : '';
-		$userId   = isset($inData['userId']) ? (int)$inData['userId'] : 0;
-		$searchTerm = "%" . $search . "%";
-		$stmt->bind_param("ssssi", $searchTerm, $searchTerm, $searchTerm, $searchTerm, $userId);
+$userId   = isset($inData['userId']) ? (int)$inData['userId'] : 0;
+
+if ($search === '') {
+    // Empty search → return all contacts for this user
+    $stmt = $conn->prepare("SELECT ID, FirstName, LastName, Phone, Email, UserID AS userId FROM Contacts WHERE UserID = ?");
+    $stmt->bind_param("i", $userId);
+} else {
+    $searchTerm = "%" . $search . "%";
+    $stmt = $conn->prepare("SELECT ID, FirstName, LastName, Phone, Email, UserID AS userId 
+                            FROM Contacts 
+                            WHERE (FirstName LIKE ? OR LastName LIKE ? OR Phone LIKE ? OR Email LIKE ?) 
+                            AND UserID = ?");
+    $stmt->bind_param("ssssi", $searchTerm, $searchTerm, $searchTerm, $searchTerm, $userId);
+}
 
 
 		$stmt->execute();
