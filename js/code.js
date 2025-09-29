@@ -15,7 +15,9 @@ function doLogin()
 	let password = document.getElementById("loginPassword").value;
 //	var hash = md5( password );
 	
-	document.getElementById("loginResult").innerHTML = "";
+	const loginMsg = document.getElementById("loginResult");
+	loginMsg.className = "alert";   // reset
+	loginMsg.innerHTML = "";
 
 	let tmp = {login:login,password:password};
 //	var tmp = {login:login,password:hash};
@@ -37,7 +39,8 @@ function doLogin()
 		
 				if( userId < 1 )
 				{		
-					document.getElementById("loginResult").innerHTML = "User/Password combination incorrect";
+					loginMsg.className = "alert error";
+					loginMsg.textContent = "User/Password combination incorrect";
 					return;
 				}
 		
@@ -53,7 +56,8 @@ function doLogin()
 	}
 	catch(err)
 	{
-		document.getElementById("loginResult").innerHTML = err.message;
+		loginMsg.className = "alert error";
+		loginMsg.textContent = err.message;
 	}
 
 }
@@ -193,17 +197,20 @@ function doRegister() {
   const email     = (document.getElementById("registerEmail")?.value || "").trim(); // optional
 
   const resultEl = document.getElementById("registerResult");
+  resultEl.className = "alert";   // reset
   resultEl.innerHTML = "";
 
   // minimal extra validation for first/last
   if (!firstName || !lastName || !login || !password) {
-    resultEl.innerHTML = "First name, last name, username, and password are required.";
-    return;
-  }
+  resultEl.className = "alert error";
+  resultEl.textContent = "First name, last name, username, and password are required.";
+  return;
+}
   if (password !== confirm) {
-    resultEl.innerHTML = "Passwords do not match.";
-    return;
-  }
+  resultEl.className = "alert error";
+  resultEl.textContent = "Passwords do not match.";
+  return;
+}
 
   // Build payload: required + optional fields
   const tmp = { firstName, lastName, login, password };
@@ -225,10 +232,12 @@ function doRegister() {
   sessionStorage.setItem('registerMsg', "Registration successful! You can log in now.");
   window.location.href = 'index.html';
 } else {
-          resultEl.innerHTML = res.error || "Registration failed.";
+  resultEl.className = "alert error";
+  resultEl.textContent = res.error || "Registration failed.";
         }
       } catch (e) {
-        resultEl.innerHTML = "Unexpected response from server.";
+        resultEl.className = "alert error";
+	resultEl.textContent = "Unexpected response from server.";
       }
     }
   };
