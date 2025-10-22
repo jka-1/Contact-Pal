@@ -10,7 +10,8 @@ function doLogin()
 	userId = 0;
 	firstName = "";
 	lastName = "";
-	
+	saveallfiles = "";
+
 	let login = document.getElementById("loginName").value;
 	let password = document.getElementById("loginPassword").value;
 //	var hash = md5( password );
